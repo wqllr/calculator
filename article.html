@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>深度学习入门完全指南 | 未来知识库</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #00f0ff;
+            --secondary: #7b2ff7;
+            --accent: #f72f8b;
+            --dark: #0a0a0f;
+            --dark-card: #12121a;
+            --text: #e0e0e0;
+            --text-muted: #888;
+        }
+        
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', sans-serif;
+            background: var(--dark);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 30% 20%, rgba(123, 47, 247, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(0, 240, 255, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 10, 15, 0.9);
+            backdrop-filter: blur(20px);
+            z-index: 100;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo span {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        main {
+            position: relative;
+            z-index: 1;
+            padding: 120px 50px 50px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .article-header {
+            margin-bottom: 40px;
+        }
+        
+        .article-tags {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .article-tag {
+            padding: 6px 15px;
+            background: rgba(0,240,255,0.1);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--primary);
+        }
+        
+        .article-header h1 {
+            font-size: 2.5rem;
+            line-height: 1.3;
+            margin-bottom: 20px;
+        }
+        
+        .article-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+        
+        .article-meta span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .article-cover {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, rgba(0,240,255,0.2), rgba(123,47,247,0.2));
+            border-radius: 20px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+        }
+        
+        .article-content {
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+        
+        .article-content h2 {
+            font-size: 1.8rem;
+            margin: 40px 0 20px;
+            color: var(--text);
+        }
+        
+        .article-content h3 {
+            font-size: 1.4rem;
+            margin: 30px 0 15px;
+        }
+        
+        .article-content p {
+            margin-bottom: 20px;
+            color: rgba(224,224,224,0.85);
+        }
+        
+        .article-content ul, .article-content ol {
+            margin-bottom: 20px;
+            padding-left: 25px;
+        }
+        
+        .article-content li {
+            margin-bottom: 10px;
+            color: rgba(224,224,224,0.85);
+        }
+        
+        .article-content code {
+            background: rgba(0,240,255,0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: var(--primary);
+        }
+        
+        .article-content pre {
+            background: var(--dark-card);
+            padding: 20px;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .article-content pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        .article-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .action-btn {
+            padding: 12px 25px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 25px;
+            color: var(--text);
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .action-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .action-btn.like:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        
+        .author-card {
+            background: var(--dark-card);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 50px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .author-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+        
+        .author-info h3 {
+            margin-bottom: 5px;
+        }
+        
+        .author-info p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        .related-articles {
+            margin-top: 60px;
+        }
+        
+        .related-articles h2 {
+            margin-bottom: 25px;
+        }
+        
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .related-card {
+            background: var(--dark-card);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        .related-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        .related-card h4 {
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+        
+        .related-card p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            margin-top: 80px;
+        }
+        
+        footer .heart {
+            color: var(--accent);
+        }
+        
+        @media (max-width: 768px) {
+            nav { padding: 15px 20px; }
+            .nav-links { display: none; }
+            main { padding: 100px 20px 30px; }
+            .article-header h1 { font-size: 1.8rem; }
+            .related-grid { grid-template-columns: 1fr; }
+            .author-card { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    
+    <nav>
+        <a href="index.html" class="logo">
+            <div class="logo-icon">🤖</div>
+            <span>未来知识库</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html">首页</a></li>
+            <li><a href="knowledge.html">知识库</a></li>
+            <li><a href="ai.html">AI助手</a></li>
+            <li><a href="about.html">关于</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <div class="article-header">
+            <div class="article-tags">
+                <span class="article-tag">🤖 人工智能</span>
+                <span class="article-tag">📚 深度学习</span>
+                <span class="article-tag">🐍 Python</span>
+            </div>
+            <h1>深度学习入门完全指南</h1>
+            <div class="article-meta">
+                <span>👁️ 1.2K 阅读</span>
+                <span>📅 2026-02-28</span>
+                <span>⏱️ 15 分钟</span>
+                <span>👤 科技极客</span>
+            </div>
+        </div>
+        
+        <div class="article-cover">🧠</div>
+        
+        <div class="article-content">
+            <p>深度学习是人工智能领域最热门的技术方向之一，本文将带你从零开始，全面了解深度学习的基础概念、核心算法以及实战项目。</p>
+            
+            <h2>什么是深度学习？</h2>
+            <p>深度学习是机器学习的一个分支，它通过构建多层神经网络来学习数据的表征。深度学习在图像识别、自然语言处理、语音识别等领域取得了突破性进展。</p>
+            
+            <h2>核心概念</h2>
+            <h3>1. 神经网络基础</h3>
+            <p>神经网络由大量的"神经元"组成，每个神经元接收输入，进行加权求和，然后通过激活函数产生输出。</p>
+            
+            <h3>2. 反向传播</h3>
+            <p>反向传播是训练神经网络的核心算法，它通过计算损失函数对每个参数的梯度来更新网络权重。</p>
+            
+            <h3>3. 激活函数</h3>
+            <p>常见的激活函数包括：</p>
+            <ul>
+                <li><strong>ReLU</strong> - 最常用的激活函数，计算简单效果好</li>
+                <li><strong>Sigmoid</strong> - 输出0到1之间，常用于分类</li>
+                <li><strong>Tanh</strong> - 输出-1到1之间，关于原点对称</li>
+            </ul>
+            
+            <h2>实战项目：用Python实现神经网络</h2>
+            <pre><code>import numpy as np
+
+class NeuralNetwork:
+    def __init__(self, layer_sizes):
+        self.weights = []
+        self.biases = []
+        for i in range(len(layer_sizes) - 1):
+            self.weights.append(np.random.randn(layer_sizes[i], layer_sizes[i+1]) * 0.1)
+            self.biases.append(np.zeros((1, layer_sizes[i+1])))
+    
+    def relu(self, x):
+        return np.maximum(0, x)
+    
+    def forward(self, X):
+        self.activations = [X]
+        for i in range(len(self.weights)):
+            z = np.dot(self.activations[-1], self.weights[i]) + self.biases[i]
+            a = self.relu(z)
+            self.activations.append(a)
+        return a
+
+# 创建网络
+nn = NeuralNetwork([784, 128, 64, 10])
+print("神经网络创建成功！")</code></pre>
+            
+            <h2>学习路线推荐</h2>
+            <ol>
+                <li><strong>阶段一：数学基础</strong> - 线性代数、概率论、微积分</li>
+                <li><strong>阶段二：Python基础</strong> - NumPy、Pandas数据处理</li>
+                <li><strong>阶段三：机器学习</strong> - 传统ML算法原理</li>
+                <li><strong>阶段四：深度学习</strong> - CNN、RNN、Transformer</li>
+                <li><strong>阶段五：项目实战</strong> - Kaggle比赛、复现论文</li>
+            </ol>
+            
+            <h2>总结</h2>
+            <p>深度学习是一门实践性很强的学科，理论结合项目才能真正掌握。建议大家多动手实践，从简单的MNIST手写识别开始，逐步挑战更复杂的任务。</p>
+        </div>
+        
+        <div class="article-actions">
+            <button class="action-btn like">❤️ 点赞</button>
+            <button class="action-btn">🔖 收藏</button>
+            <button class="action-btn">📤 分享</button>
+        </div>
+        
+        <div class="author-card">
+            <div class="author-avatar">👨‍💻</div>
+            <div class="author-info">
+                <h3>科技极客</h3>
+                <p>AI研究员 / 资深开发者 / 热衷分享技术知识</p>
+            </div>
+        </div>
+        
+        <div class="related-articles">
+            <h2>相关文章</h2>
+            <div class="related-grid">
+                <div class="related-card">
+                    <h4>🤖 ChatGPT原理与实战</h4>
+                    <p>了解大语言模型的工作原理</p>
+                </div>
+                <div class="related-card">
+                    <h4>💻 Python进阶之路</h4>
+                    <p>掌握Python高级特性</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>© 2026 未来知识库 | Powered by <span class="heart">❤️</span> & AI</p>
+    </footer>
+</body>
+</html>
