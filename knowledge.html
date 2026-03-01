@@ -466,7 +466,7 @@ document.addEventListener("DOMContentLoaded",function(){
     <!-- 动态数据加载 -->
     <script>
         // API地址 - 优先使用本地，失败则用线上
-        const API_BASE = 'https://xiaobai-knowledge-api.loca.lt';
+        const API_BASE = window.location.protocol + '//xiaobai-knowledge-api.loca.lt';
         
         // 加载文章列表
         async function loadArticles() {
@@ -479,9 +479,24 @@ document.addEventListener("DOMContentLoaded",function(){
                     updateStats(result.data);
                 }
             } catch (error) {
-                console.error('加载失败，使用本地数据:', error);
-                // 使用本地数据作为后备
-                loadLocalData();
+                console.error('API加载失败:', error);
+                // 尝试本地服务器
+                tryLocalAPI();
+            }
+            
+            // 尝试本地服务器
+            async function tryLocalAPI() {
+                try {
+                    const response = await fetch('http://localhost:3001/api/articles');
+                    const result = await response.json();
+                    if (result.success) {
+                        renderArticles(result.data);
+                        updateStats(result.data);
+                    }
+                } catch (e) {
+                    console.error('本地API也失败:', e);
+                    loadLocalData();
+                }
             }
         }
         
