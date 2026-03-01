@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于 | 未来知识库</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #00f0ff;
+            --secondary: #7b2ff7;
+            --accent: #f72f8b;
+            --dark: #0a0a0f;
+            --dark-card: #12121a;
+            --text: #e0e0e0;
+            --text-muted: #888;
+        }
+        
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', sans-serif;
+            background: var(--dark);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        
+        /* 背景效果 */
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 30% 20%, rgba(123, 47, 247, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(0, 240, 255, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        /* 导航 */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 10, 15, 0.9);
+            backdrop-filter: blur(20px);
+            z-index: 100;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo span {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: 0.3s;
+            position: relative;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary);
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: 0.3s;
+        }
+        
+        .nav-links a:hover::after, .nav-links a.active::after {
+            width: 100%;
+        }
+        
+        /* 主内容 */
+        main {
+            position: relative;
+            z-index: 1;
+            padding: 120px 50px 50px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        /* 关于头部 */
+        .about-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .avatar {
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+            border-radius: 30px;
+            margin: 0 auto 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        .about-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .about-header h1 span {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .about-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+        
+        /* 简介卡片 */
+        .intro-card {
+            background: var(--dark-card);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 25px;
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .intro-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .intro-card p {
+            line-height: 1.8;
+            color: var(--text-muted);
+        }
+        
+        /* 特性网格 */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .feature-item {
+            background: var(--dark-card);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            transition: 0.3s;
+        }
+        
+        .feature-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .feature-item h3 {
+            margin-bottom: 10px;
+        }
+        
+        .feature-item p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        /* 团队 */
+        .team-section h2 {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+        }
+        
+        .team-member {
+            background: var(--dark-card);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .member-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+        
+        .team-member h3 {
+            margin-bottom: 5px;
+        }
+        
+        .team-member p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        /* 联系 */
+        .contact-section {
+            background: var(--dark-card);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 25px;
+            padding: 40px;
+            margin-top: 40px;
+            text-align: center;
+        }
+        
+        .contact-section h2 {
+            margin-bottom: 20px;
+        }
+        
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .contact-btn {
+            padding: 15px 30px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 1rem;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .contact-btn:hover {
+            border-color: var(--primary);
+            background: rgba(0,240,255,0.05);
+            transform: translateY(-3px);
+        }
+        
+        /* 页脚 */
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            margin-top: 80px;
+        }
+        
+        footer .heart {
+            color: var(--accent);
+        }
+        
+        @media (max-width: 768px) {
+            nav { padding: 15px 20px; }
+            .nav-links { display: none; }
+            main { padding: 100px 20px 30px; }
+            .intro-card, .contact-section { padding: 25px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    
+    <nav>
+        <a href="index.html" class="logo">
+            <div class="logo-icon">🤖</div>
+            <span>未来知识库</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html">首页</a></li>
+            <li><a href="knowledge.html">知识库</a></li>
+            <li><a href="ai.html">AI助手</a></li>
+            <li><a href="about.html" class="active">关于</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <div class="about-header">
+            <div class="avatar">🤖</div>
+            <h1>关于 <span>未来知识库</span></h1>
+            <p>探索知识的边界，引领智能未来</p>
+        </div>
+        
+        <div class="intro-card">
+            <h2>🌟 我们是谁</h2>
+            <p>
+                未来知识库是一个融合人工智能与前沿科技的智能知识管理平台。我们致力于为用户提供最前沿的科技知识、最实用的编程技巧、以及最创新的AI应用方案。<br><br>
+                在这里，知识不仅仅是信息的堆积，更是智慧的传承。我们相信，未来的知识获取方式应该是智能的、个性化的、随时可及的。通过AI技术与知识管理的深度融合，我们正在重新定义人类获取知识的方式。
+            </p>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="feature-icon">🧠</div>
+                <h3>AI 驱动</h3>
+                <p>基于先进的大语言模型，提供智能问答与知识推荐</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🚀</div>
+                <h3>前沿科技</h3>
+                <p>紧跟科技发展脉搏，涵盖AI、区块链、量子计算等领域</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">💡</div>
+                <h3>开放共享</h3>
+                <p>知识开源共建，人人都是知识的创造者与受益者</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🔒</div>
+                <h3>安全可靠</h3>
+                <p>企业级安全保障，保护用户数据隐私</p>
+            </div>
+        </div>
+        
+        <div class="team-section">
+            <h2>👥 核心团队</h2>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-avatar">👨‍💻</div>
+                    <h3>技术总监</h3>
+                    <p>AI & 云计算专家</p>
+                </div>
+                <div class="team-member">
+                    <div class="member-avatar">👩‍🎨</div>
+                    <h3>产品设计</h3>
+                    <p>用户体验设计</p>
+                </div>
+                <div class="team-member">
+                    <div class="member-avatar">🧑‍🔬</div>
+                    <h3>算法工程师</h3>
+                    <p>机器学习研究</p>
+                </div>
+                <div class="team-member">
+                    <div class="member-avatar">👨‍💼</div>
+                    <h3>项目运营</h3>
+                    <p>社区运营管理</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="contact-section">
+            <h2>📮 联系我们</h2>
+            <p style="color: var(--text-muted); margin-bottom: 25px;">
+                有任何问题或建议？我们随时倾听你的声音
+            </p>
+            <div class="contact-links">
+                <a href="#" class="contact-btn">📧 发送邮件</a>
+                <a href="#" class="contact-btn">💬 加入社群</a>
+                <a href="#" class="contact-btn">🐙 GitHub</a>
+                <a href="#" class="contact-btn">🐦 Twitter</a>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>© 2026 未来知识库 | Powered by <span class="heart">❤️</span> & AI</p>
+    </footer>
+</body>
+</html>
