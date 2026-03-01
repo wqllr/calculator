@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python计算器 🧮</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .calculator {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .title {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        
+        .title span {
+            font-size: 28px;
+        }
+        
+        .display {
+            background: #f5f5f5;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: right;
+        }
+        
+        #display {
+            width: 100%;
+            border: none;
+            background: transparent;
+            font-size: 36px;
+            text-align: right;
+            color: #333;
+            outline: none;
+        }
+        
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        
+        button {
+            padding: 20px;
+            font-size: 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #f0f0f0;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        button:active {
+            transform: scale(0.95);
+        }
+        
+        .btn-number {
+            background: #ffffff;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .btn-number:hover {
+            background: #f5f5f5;
+            border-color: #667eea;
+        }
+        
+        .btn-operator {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-operator:hover {
+            background: #5568d3;
+        }
+        
+        .btn-equals {
+            background: #764ba2;
+            color: white;
+            grid-column: span 2;
+        }
+        
+        .btn-equals:hover {
+            background: #6a4190;
+        }
+        
+        .btn-clear {
+            background: #ff6b6b;
+            color: white;
+        }
+        
+        .btn-clear:hover {
+            background: #ff5252;
+        }
+        
+        .btn-decimal {
+            background: #f0f0f0;
+        }
+        
+        .info {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h1 class="title"><span>🧮</span> Python计算器</h1>
+        <div class="display">
+            <input type="text" id="display" readonly placeholder="0">
+        </div>
+        <div class="buttons">
+            <button class="btn-clear" onclick="clearDisplay()">C</button>
+            <button class="btn-operator" onclick="deleteChar()">⌫</button>
+            <button class="btn-operator" onclick="appendOperator('%')">%</button>
+            <button class="btn-operator" onclick="appendOperator('/')">÷</button>
+            
+            <button class="btn-number" onclick="appendNumber('7')">7</button>
+            <button class="btn-number" onclick="appendNumber('8')">8</button>
+            <button class="btn-number" onclick="appendNumber('9')">9</button>
+            <button class="btn-operator" onclick="appendOperator('*')">×</button>
+            
+            <button class="btn-number" onclick="appendNumber('4')">4</button>
+            <button class="btn-number" onclick="appendNumber('5')">5</button>
+            <button class="btn-number" onclick="appendNumber('6')">6</button>
+            <button class="btn-operator" onclick="appendOperator('-')">-</button>
+            
+            <button class="btn-number" onclick="appendNumber('1')">1</button>
+            <button class="btn-number" onclick="appendNumber('2')">2</button>
+            <button class="btn-number" onclick="appendNumber('3')">3</button>
+            <button class="btn-operator" onclick="appendOperator('+')">+</button>
+            
+            <button class="btn-number" onclick="appendNumber('0')">0</button>
+            <button class="btn-decimal" onclick="appendDecimal()">.</button>
+            <button class="btn-equals" onclick="calculate()">=</button>
+        </div>
+        <p class="info">✨ Hello World 计算器 | Python Web版 🐍</p>
+    </div>
+
+    <script>
+        let display = document.getElementById('display');
+        let currentExpression = '';
+        
+        function updateDisplay() {
+            display.value = currentExpression || '0';
+        }
+        
+        function appendNumber(num) {
+            currentExpression += num;
+            updateDisplay();
+        }
+        
+        function appendOperator(op) {
+            if (currentExpression !== '') {
+                currentExpression += ' ' + op + ' ';
+                updateDisplay();
+            }
+        }
+        
+        function appendDecimal() {
+            let parts = currentExpression.split(/[\+\-\*\/\%]/);
+            let lastPart = parts[parts.length - 1];
+            if (!lastPart.includes('.')) {
+                currentExpression += '.';
+                updateDisplay();
+            }
+        }
+        
+        function clearDisplay() {
+            currentExpression = '';
+            updateDisplay();
+        }
+        
+        function deleteChar() {
+            currentExpression = currentExpression.trim();
+            currentExpression = currentExpression.slice(0, -1);
+            updateDisplay();
+        }
+        
+        function calculate() {
+            try {
+                // 替换显示符号为计算符号
+                let expr = currentExpression
+                    .replace(/×/g, '*')
+                    .replace(/÷/g, '/');
+                
+                let result = eval(expr);
+                
+                // 处理浮点数精度问题
+                if (!Number.isInteger(result)) {
+                    result = Math.round(result * 100000000) / 100000000;
+                }
+                
+                currentExpression = result.toString();
+                updateDisplay();
+            } catch (e) {
+                display.value = '错误';
+                currentExpression = '';
+            }
+        }
+        
+        // 键盘支持
+        document.addEventListener('keydown', function(event) {
+            let key = event.key;
+            
+            if (key >= '0' && key <= '9') {
+                appendNumber(key);
+            } else if (key === '+' || key === '-' || key === '*' || key === '/' || key === '%') {
+                appendOperator(key);
+            } else if (key === '.') {
+                appendDecimal();
+            } else if (key === 'Enter') {
+                calculate();
+            } else if (key === 'Escape') {
+                clearDisplay();
+            } else if (key === 'Backspace') {
+                deleteChar();
+            }
+        });
+    </script>
+</body>
+</html>
