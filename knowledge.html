@@ -445,5 +445,22 @@
     <footer>
         <p>© 2026 未来知识库 | Powered by <span class="heart">❤️</span> & AI</p>
     </footer>
+
+<script>
+document.addEventListener("DOMContentLoaded",function(){
+    if(window.innerWidth<=768){
+        var m=document.createElement("div");
+        m.className="mobile-menu";
+        m.innerHTML="☰";
+        m.style.cssText="position:fixed;top:15px;right:20px;z-index:200;font-size:1.5rem;cursor:pointer;padding:10px;color:#e0e0e0;background:rgba(10,10,15,0.9);border-radius:8px;";
+        var n=document.querySelector(".nav-links");
+        if(n){
+            n.style.cssText="display:none;position:fixed;top:60px;left:0;right:0;background:rgba(10,10,15,0.98);flex-direction:column;padding:20px;gap:15px;z-index:150;border-bottom:1px solid rgba(255,255,255,0.1);";
+            m.onclick=function(){n.style.display=n.style.display==="flex"?"none":"flex";};
+            document.body.appendChild(m);
+        }
+    }
+});
+</script>
 </body>
 </html>
