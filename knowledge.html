@@ -349,7 +349,7 @@
             <button class="category-btn">🛠️ 工具资源</button>
         </div>
         
-        <div class="articles-grid">
+        <div class="articles-grid" id="articlesGrid">
             <div class="article-card" onclick="location.href='article.html'">
                 <span class="article-tag">🤖 人工智能</span>
                 <h3>深度学习入门完全指南</h3>
@@ -462,5 +462,86 @@ document.addEventListener("DOMContentLoaded",function(){
     }
 });
 </script>
+
+    <!-- 动态数据加载 -->
+    <script>
+        // API地址 - 优先使用本地，失败则用线上
+        const API_BASE = 'https://xiaobai-knowledge-api.loca.lt';
+        
+        // 加载文章列表
+        async function loadArticles() {
+            try {
+                const response = await fetch(API_BASE + '/api/articles');
+                const result = await response.json();
+                
+                if (result.success) {
+                    renderArticles(result.data);
+                    updateStats(result.data);
+                }
+            } catch (error) {
+                console.error('加载失败，使用本地数据:', error);
+                // 使用本地数据作为后备
+                loadLocalData();
+            }
+        }
+        
+        // 渲染文章列表
+        function renderArticles(articles) {
+            const grid = document.getElementById('articlesGrid');
+            if (!grid) return;
+            
+            grid.innerHTML = articles.map(article => `
+                <div class="article-card" onclick="location.href='article.html?id=${article.id}'">
+                    <span class="article-tag">${article.category_emoji || ''} ${article.category}</span>
+                    <h3>${article.title}</h3>
+                    <p>${article.description}</p>
+                    <div class="article-meta">
+                        <span>👁️ ${formatViews(article.views)}</span>
+                        <span>📅 ${article.date}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // 更新统计
+        function updateStats(articles) {
+            const totalViews = articles.reduce((sum, a) => sum + (a.views || 0), 0);
+            const categoryCount = {};
+            articles.forEach(a => {
+                categoryCount[a.category] = (categoryCount[a.category] || 0) + 1;
+            });
+            
+            // 更新统计数字
+            const statNumbers = document.querySelectorAll('.stat-number');
+            if (statNumbers[0]) statNumbers[0].textContent = articles.length;
+            if (statNumbers[1]) statNumbers[1].textContent = Object.keys(categoryCount).length;
+            if (statNumbers[2]) statNumbers[2].textContent = articles.reduce((s, a) => s + (a.tags || []).length, 0);
+            if (statNumbers[3]) statNumbers[3].textContent = formatViews(totalViews);
+        }
+        
+        // 格式化浏览量
+        function formatViews(views) {
+            if (views >= 1000) return (views / 1000).toFixed(1) + 'K';
+            return views;
+        }
+        
+        // 本地后备数据
+        function loadLocalData() {
+            const localData = [
+                {"id":1,"title":"深度学习入门完全指南","category":"人工智能","category_emoji":"🤖","description":"从零开始学习深度学习，了解神经网络、卷积网络等核心概念，包含实战案例。","views":1200,"date":"2026-02-28"},
+                {"id":2,"title":"Python进阶之路","category":"编程开发","category_emoji":"💻","description":"掌握Python高级特性，装饰器、生成器、上下文管理器等核心知识。","views":980,"date":"2026-02-25"},
+                {"id":3,"title":"Web3.0与区块链技术","category":"互联网","category_emoji":"🌐","description":"深入理解Web3.0概念、区块链原理、智能合约开发入门指南。","views":756,"date":"2026-02-20"},
+                {"id":4,"title":"ChatGPT原理与实战","category":"人工智能","category_emoji":"🤖","description":"了解大语言模型的工作原理，Prompt Engineering最佳实践。","views":2100,"date":"2026-02-18"},
+                {"id":5,"title":"AI工具大全2026","category":"工具资源","category_emoji":"🛠️","description":"整理最实用的AI工具集合，提升工作效率的必备神器。","views":1500,"date":"2026-02-15"},
+                {"id":6,"title":"Git从入门到精通","category":"编程开发","category_emoji":"💻","description":"版本控制完全指南，团队协作开发必备技能。","views":890,"date":"2026-02-10"}
+            ];
+            renderArticles(localData);
+            updateStats(localData);
+        }
+        
+        // 页面加载完成后获取数据
+        document.addEventListener('DOMContentLoaded', loadArticles);
+    </script>
+
 </body>
 </html>
