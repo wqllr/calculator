@@ -503,8 +503,8 @@
                 return data.response || data.error || '抱歉，我暂时无法回复你。';
                 
             } catch (error) {
-                console.error('API调用失败:', error);
-                // 如果API不可用，使用本地回复作为后备
+                console.error('API调用失败,使用本地回复:', error);
+                // API不可用时返回本地回复
                 return getLocalResponse(message);
             }
         }
@@ -587,7 +587,9 @@
                 
             } catch (error) {
                 hideTyping();
-                addMessage('ai', '抱歉，我遇到了一些问题。请稍后再试。😅');
+                // API失败时使用本地回复
+                const localReply = getLocalResponse(text);
+                addMessage('ai', localReply, true);
             }
             
             setInputEnabled(true);
