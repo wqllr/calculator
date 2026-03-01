@@ -437,7 +437,7 @@
     
     <script>
         // 本地模拟回复（当API不可用时）
-        const localResponses = {
+        // const localResponses = {
             '你好': '你好！有什么我可以帮助你的吗？😊',
             'hello': 'Hi there! How can I help you?',
             '帮助': '我可以帮你：解答问题、写代码、写文章、学习辅导等。直接问我吧！',
@@ -450,7 +450,7 @@
             '默认': '感谢你的提问！这个问题很有意思。让我来帮你分析一下...\n\n根据我的理解，这个问题涉及多个方面。我建议可以从以下几个角度来思考：\n\n1. 明确具体需求\n2. 了解相关背景\n3. 制定可行计划\n\n如果需要更详细的解答，欢迎继续提问！'
         };
         
-        function getLocalResponse(message) {
+        // function getLocalResponse(message) {
             const lowerMsg = message.toLowerCase();
             for (let key in localResponses) {
                 if (lowerMsg.includes(key.toLowerCase())) {
@@ -479,6 +479,55 @@
         
         function escapeHtml(text) {
             return text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+        
+        // AI API 地址
+        const AI_API_URL = 'https://xiaobai-ai-api.loca.lt/api/chat';
+        
+        async function callAI(message) {
+            try {
+                const response = await fetch(AI_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message: message })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('API请求失败');
+                }
+                
+                const data = await response.json();
+                return data.response || data.error || '抱歉，我暂时无法回复你。';
+                
+            } catch (error) {
+                console.error('API调用失败:', error);
+                // 如果API不可用，使用本地回复作为后备
+                return getLocalResponse(message);
+            }
+        }
+        
+        // 本地后备回复（当API不可用时）
+        function getLocalResponse(message) {
+            const responses = {
+                '你好': '你好！有什么我可以帮助你的吗？😊',
+                'hello': 'Hi there! How can I help you?',
+                '帮助': '我可以帮你：解答问题、写代码、写文章、学习辅导等。直接问我吧！',
+                '机器学习': '机器学习是人工智能的一个分支，让计算机通过数据学习并改进。主要类型包括：监督学习、无监督学习、强化学习。',
+                'python': 'Python是一门易学易用的编程语言，适合初学者。建议学习路径：1. 基础语法 2. 数据结构 3. 函数和模块 4. 实战项目。',
+                '代码': '我可以帮你写代码！请告诉我使用的编程语言和实现功能。',
+                '笑话': '有一天，程序员去面试。面试官问："你最大的缺点是什么？"程序员说："我有时候会debug到凌晨。"😄',
+                '诗': '好的，我来帮你写一首诗：\n\n春风拂面柳絮飞，\n花开万里映朝晖。\n山川如画天地美，\n人间四月共芳菲。\n\n🌸',
+            };
+            
+            const lowerMsg = message.toLowerCase();
+            for (let key in responses) {
+                if (lowerMsg.includes(key.toLowerCase())) {
+                    return responses[key];
+                }
+            }
+            return '感谢你的提问！这个问题很有意思。让我来帮你分析一下...\n\n如果需要更详细的解答，欢迎继续提问！';
         }
         
         function showTyping() {
@@ -526,11 +575,8 @@
             setInputEnabled(false);
             
             try {
-                // 模拟API调用延迟
-                await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000));
-                
-                // 获取回复（这里使用本地模拟，可以替换为真实API）
-                const response = getLocalResponse(text);
+                // 调用真正的AI API
+                const response = await callAI(text);
                 
                 // 隐藏加载状态
                 hideTyping();
